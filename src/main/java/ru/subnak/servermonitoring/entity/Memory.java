@@ -26,6 +26,6 @@ public class Memory {
 
     @Override
     public String toString() {
-        return "Total: " + total + ", Free: " + free+ ", Used: " + used;
+        return "Total: " + total + ", Free: " + free + ", Used: " + used;
     }
 }

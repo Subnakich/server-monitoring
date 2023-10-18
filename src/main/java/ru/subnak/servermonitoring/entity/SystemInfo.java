@@ -1,11 +1,7 @@
 package ru.subnak.servermonitoring.entity;
 
-import com.fasterxml.jackson.annotation.JsonKey;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.Arrays;
 
 public class SystemInfo {
 

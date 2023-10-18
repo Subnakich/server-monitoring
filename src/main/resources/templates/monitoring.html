@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -70,8 +70,8 @@
                                 series.addPoint([x, y], true, shift);
 
                                 var memseries = memoryChart.series[0];
-                                memseries.data[0].update((data.memory.used)/(1024*1024));
-                                memseries.data[1].update((data.memory.free)/(1024*1024));
+                                memseries.data[0].update((data.memory.used) / (1024 * 1024));
+                                memseries.data[1].update((data.memory.free) / (1024 * 1024));
 
                             })
                         }, 5000); // 10 секунд

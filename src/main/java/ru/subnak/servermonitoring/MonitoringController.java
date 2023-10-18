@@ -1,9 +1,5 @@
 package ru.subnak.servermonitoring;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +10,6 @@ import ru.subnak.servermonitoring.entity.SystemInfo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Controller
@@ -29,8 +22,8 @@ public class MonitoringController {
         SystemInfo systemInfo = getResource();
 
         model.addAttribute("CPUUsage", systemInfo.getCPUUsage());
-        model.addAttribute("RAMFree", ((float) systemInfo.getMemory().getFree()/(1024*1024)));
-        model.addAttribute("RAMUsed", ((float) systemInfo.getMemory().getUsed()/(1024*1024)));
+        model.addAttribute("RAMFree", ((float) systemInfo.getMemory().getFree() / (1024 * 1024)));
+        model.addAttribute("RAMUsed", ((float) systemInfo.getMemory().getUsed() / (1024 * 1024)));
 
         return "monitoring";
     }
