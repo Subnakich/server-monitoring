@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/dashboards/dashboards.js"></script>
+    <script src="https://code.highcharts.com/dashboards/modules/dashboards-plugin.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <title>System Information</title>
+</head>
+<body>
+
+<div id="memoryUsageChart"></div>
+<div id="cpuUsageChart"></div>
+<div id="diskUsageContainer"></div>
+
+<script>
+    var memoryFree = [[${RAMFree}]];
+    var memoryUsed = [[${RAMUsed}]];
+
+    var memoryChart = Highcharts.chart('memoryUsageChart', {
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Оперативная память'
+        },
+        tooltip: {
+            pointFormat: '<b>{point.y:.1f} GB</b>'
+        },
+        series: [{
+            name: 'Память',
+            data: [{
+                name: 'Использовано',
+                y: memoryUsed,
+            }, {
+                name: 'Свободно',
+                y: memoryFree,
+            }]
+        }]
+    });
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    var cpuusage = [[${CPUUsage}]];
+
+    Highcharts.chart('cpuUsageChart', {
+        chart: {
+            type: 'spline',
+
+            marginRight: 10,
+            events: {
+                load: function () {
+                    // Установите интервал обновления данных (10 секунд)
+                    var chart = this;
+                    setInterval(
+                        function () {
+                            $.get('/get-data', function (data) {
+                                var newCpuUsage = data.cpuusage;
+                                var x = (new Date()).getTime();
+                                var y = newCpuUsage;
+
+                                var series = chart.series[0];
+                                var shift = series.data.length > 10;
+                                series.addPoint([x, y], true, shift);
+
+                                var memseries = memoryChart.series[0];
+                                memseries.data[0].update((data.memory.used) / (1024 * 1024));
+                                memseries.data[1].update((data.memory.free) / (1024 * 1024));
+
+                            })
+                        }, 5000); // 10 секунд
+                }
+            }
+        },
+        title: {
+            text: 'Загрузка CPU (%)'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150
+        },
+        yAxis: {
+            min: 0,
+            max: 100,
+            title: {
+                text: ''
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2) + ' %';
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        series: [{
+            name: 'Загрузка CPU',
+            data: (function () {
+                var data = [];
+                var x = (new Date()).getTime();
+                data.push([x, cpuusage]);
+                return data;
+            }())
+        }]
+    });
+</script>
+</body>
+</html>
+
